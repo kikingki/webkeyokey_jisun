@@ -1,3 +1,5 @@
+{% load static %}
+
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     
@@ -5,21 +7,24 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    {% block nav %}
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">Webkeyokey</span>
+      </nav>
+    {% endblock nav%}
 
-
-<div class="card">
-    <img src="{{ menus.m_image.url }}" class="card-img-top" alt="">
-    <div class="card-body">
-      <h5 class="card-title">{{ menus.m_name }}</h5>
-      <p class="card-text">{{ menus.m_info }}</p>
-    </div>
-</div>
-
-<p>포장 : {{ options.takeout }}</p>
-<p>수량 : {{ options.count }}</p>
-<p>추가 옵션 {{ etcoptions.option_name }} : {{ etcoptions.option_price }}</p>
-<p>총 금액 </p>
-<a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">담기</a>
-<a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">취소</a>
-
-
+    {% block bossnav %}
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">Webkeyokey</span>
+        <button class="btn btn-sm btn-outline-secondary" type="button">주문 확인</button>
+        <button class="btn btn-sm btn-outline-secondary" type="button">설정</button>
+      </nav>
+    {% endblock bossnav %}
+  </body>
+</html>

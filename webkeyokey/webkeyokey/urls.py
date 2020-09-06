@@ -21,10 +21,16 @@ from menuapp import urls
 from settingapp import urls
 from userapp import urls
 
+
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    # path('menu/', include('menuapp.urls')),
+    path('base/', views.base, name='base'),
+    
+    path('menu/', include('menuapp.urls')),
     # path('setting/', include('settingapp.urls')),
     # path('user/', include('userapp.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
