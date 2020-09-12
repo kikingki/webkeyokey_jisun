@@ -1,25 +1,42 @@
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+  integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 
 
 <div class="card">
-    <img src="{{ menus.m_image.url }}" class="card-img-top" alt="">
-    <div class="card-body">
-      <h5 class="card-title">{{ menus.m_name }}</h5>
-      <p class="card-text">{{ menus.m_info }}</p>
-    </div>
+  {% if menu.m_img %}
+  <img class="card-img-top" src="{{ menu.m_img.url }}" alt="">
+  {% endif %}
+
+  <div class="card-body">
+    <h5 class="card-title">{{ menu.m_name }}</h5>
+    <p class="card-text">{{ menu.m_info }}</p>
+  </div>
 </div>
 
-<p>포장 : {{ options.takeout }}</p>
-<p>수량 : {{ options.count }}</p>
-<p>추가 옵션 {{ etcoptions.option_name }} : {{ etcoptions.option_price }}</p>
-<p>총 금액 </p>
+<form>
+<label>
+  Takeout: <input type="checkbox" value="{{ menu_op.m_option.takeout }}">
+</label>
+<label>
+  수량: <input type="number" value="{{ menu_op.m_option.count }}">
+</label>
+<label>
+{% for m in menu_op.m_option.all %}
+  추가옵션: <input type="checkbox" name="etcoption[]" value="{{ m.etcoption_id }}" {% if m.checked %}checked{% endif %}>
+{% endfor %}
+</label>
+<input type="submit" value="추가">
+</form>
+
+<p>총 금액: {{ total_price }}</p>
 <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">담기</a>
 <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">취소</a>
-
-

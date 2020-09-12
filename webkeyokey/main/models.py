@@ -19,7 +19,7 @@ class CustomUser(AbstractUser):
         return self.username
 
     phone = models.IntegerField(default="010")
-    u_id = models.IntegerField(null=True)   #null=True id가 null 허용이 되면 안 될 것 같은데..?
+    u_id = models.IntegerField(null=True)
     answer = models.TextField(max_length=200, blank=True)
     question_id = models.IntegerField(default=1, choices=Q)
 
@@ -29,6 +29,7 @@ class EtcOption(models.Model):
 
     option_name = models.CharField(max_length=200)
     option_price = models.IntegerField()
+    checked = models.BooleanField(default=False)
 
 class Option(models.Model):
     etcoption_id = models.ForeignKey(EtcOption, on_delete=models.CASCADE, related_name='etcoption_id')
@@ -65,6 +66,3 @@ class Pay(models.Model):
     date = models.DateTimeField()
     total = models.IntegerField()
     order_num = models.IntegerField()
-
-
-
