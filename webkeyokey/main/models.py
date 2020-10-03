@@ -23,19 +23,6 @@ class CustomUser(AbstractUser):
     answer = models.TextField(max_length=200, blank=True)
     question_id = models.IntegerField(default=1, choices=Q)
 
-class EtcOption(models.Model):
-    def __str__(self):
-        return self.option_name
-
-    option_name = models.CharField(max_length=200)
-    option_price = models.IntegerField()
-    checked = models.BooleanField(default=False)
-
-class Option(models.Model):
-    etcoption_id = models.ForeignKey(EtcOption, on_delete=models.CASCADE, related_name='etcoption_id')
-    takeout = models.BooleanField()
-    count = models.IntegerField()
-
 class Menu(models.Model):
     def __str__(self):
         return self.m_name
@@ -51,18 +38,31 @@ class Menu(models.Model):
     
     c_id = models.IntegerField(default=1, choices=C)
 
-    m_option = models.ForeignKey(Option, on_delete=models.CASCADE, related_name='m_option')
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user_id')
     m_name = models.CharField(max_length=200)
     m_info = models.TextField()
     m_price = models.IntegerField()
     m_img = models.ImageField(blank=True, upload_to="images/", null=True)
+    m_takeout = models.BooleanField(default=False) # 사장님이 포장가능여부 표시
+    options = models.ManyToManyField('Option', blank=True)
+
+class Option(models.Model):
+    def __str__(self):
+        return self.option_name
+
+    option_name = models.CharField(max_length=200)
+    option_price = models.IntegerField()
+    checked = models.BooleanField(default=False)    #옵션 체크했을 때 필요한 필드
 
 class Basket(models.Model):
     ototal_price = models.IntegerField()
-    menu_id = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='menu_id')
+    menu_id = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='selected_menu')
+    b_options = models.ManyToManyField('Option', blank=True)  #다대다 관계로 바꿈
+    takeout = models.BooleanField(default=False)    # 소비자가 포장할지 안할지 선택
+    count = models.IntegerField()
 
 class Pay(models.Model):
     date = models.DateTimeField()
     total = models.IntegerField()
     order_num = models.IntegerField()
+    baskets = models.ManyToManyField('Basket')

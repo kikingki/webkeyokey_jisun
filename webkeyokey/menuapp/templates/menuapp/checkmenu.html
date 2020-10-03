@@ -7,14 +7,23 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 
+{% for b in baskets.all %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>메뉴</strong> 옵션 가격
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true" onclick="location.href ='{% url 'delete' pk=baskets.pk %}'">&times;</span>
-    </button>
-  </div>
+  <strong>{{ b.menu_id.m_name }}</strong>
+  {% for option in b.b_options.all %}
+    {{ option.option_name }}
+  {% endfor %}
+  <br>
+  {{ b.count }}개
+  <br>
+  {{ b.ototal_price }}원
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true" onclick="location.href ='{% url 'delete' pk=b.pk %}'">&times;</span>
+  </button>
+</div>
+{% endfor %}
 
-  <p>총 금액 {{ Basket.ototal_price }}</p>
+  <p>총 금액: </p>
 
   <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">계속 주문하기</a>
 <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'pay' %}'">결제하기</a>

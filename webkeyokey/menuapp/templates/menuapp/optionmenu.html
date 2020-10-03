@@ -19,24 +19,51 @@
   <div class="card-body">
     <h5 class="card-title">{{ menu.m_name }}</h5>
     <p class="card-text">{{ menu.m_info }}</p>
+    <p class="card-text">{{ menu.m_price }}</p>
   </div>
 </div>
 
-<form>
-<label>
-  Takeout: <input type="checkbox" value="{{ menu_op.m_option.takeout }}">
-</label>
-<label>
-  수량: <input type="number" value="{{ menu_op.m_option.count }}">
-</label>
-<label>
-{% for m in menu_op.m_option.all %}
-  추가옵션: <input type="checkbox" name="etcoption[]" value="{{ m.etcoption_id }}" {% if m.checked %}checked{% endif %}>
-{% endfor %}
-</label>
-<input type="submit" value="추가">
-</form>
+<form method="POST" action="{% url 'optionmenu' pk=menu.pk %}">
+  {% csrf_token %}
 
-<p>총 금액: {{ total_price }}</p>
-<a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">담기</a>
+{% if menu.m_takeout %}
+<label>
+  Takeout: <input name='takeout' type="checkbox" value="True">
+</label>
+{% else %}
+  <p>포장이 불가능한 메뉴입니다.</p>
+{% endif %}
+
+<label>
+  수량: <input name='count' type="number" value="1">
+</label>
+
+추가옵션: 
+{% for m in menu.options.all %}
+<label>
+<input type="checkbox" name="option[]" value="{{m}}" class="chk">{{ m.option_name }}({{m.option_price}}원)
+</label>
+{% endfor %}
+
+<input type="submit" value="추가" onclick="javascript:btn()">
+</form>
+<script> function btn(){ alert('바구니에 추가되었습니다.'); } </script>
+<!-- 
+<script>
+  $(document).ready(function () {
+      $(".chk").click(function () {
+        var price = {{ menu.m_price }};
+          $(".chk:checked").each(function () {
+            if 
+            price += $(this).val();
+          });
+          $("#total").val(price);
+      });
+  });
+</script> -->
+
+<!-- <p id = 'total'>총 금액: {{ basket.ototal_price }}</p> -->
+<!-- 총 금액:
+<input id = 'total' value="{{ menu.m_price }}"> </input> -->
+<a href="#" class="btn btn-primary" onclick="location.href ='{% url 'checkmenu' %}'">주문확인</a>
 <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">취소</a>

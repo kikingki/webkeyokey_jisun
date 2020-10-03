@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from main.models import CustomUser, Menu, Option, EtcOption, Basket, Pay
+from main.models import CustomUser, Menu, Option, Basket, Pay
 # from .forms import OptionForm, EtcOptionForm
 
 # Create your views here.
@@ -12,33 +12,46 @@ from main.models import CustomUser, Menu, Option, EtcOption, Basket, Pay
 # 5. optionmenu 페이지에서 총 금액이 나오려면 옵션 선택하는대로 실시간으로 계산이 되어야 하지 않나?? => 새로고침 누를 때 계산하도록
 # 6. 카테고리를 바꾸니 menu 페이지 이상하게 뜸 => 그냥 a태그로 카테고리 쓰기
 
+# 9.21 - 1. 바구니도 옵션과 다대다 관계로 해야할 듯? 한 바구니에 1메뉴+여러개의 옵션 가격이 들어가야함.
+# 2. takeout 체크박스를 선택하지 않았을 경우엔 아예 POST로 전달이 안되는데 이런 경우엔 어떡하징 => 해결
+# 3. 바구니의 총 금액 보여주기 -> jsp로 
+
 def menu(request):
     menus = Menu.objects.all()
     return render(request, 'menuapp/menu.html', {'menus':menus})
 
 def optionmenu(request, pk):
     menu = get_object_or_404(Menu, pk=pk)
+    basket = Basket()
     if request.method == 'POST':
-        basket = Basket()
-        menu_op = menu
+        basket.menu_id = menu
+        basket.takeout = False
+        if request.POST.getlist('takeout') != []:
+            basket.takeout = True
+        basket.count = request.POST['count']
+        basket.ototal_price = menu.m_price
+        check_values = request.POST.getlist('option[]')
+        op_list = list()
+        for c in check_values:
+            if Option.objects.filter(option_name=c).exists():
+                op = Option.objects.get(option_name=c)
+                basket.ototal_price += op.option_price
+                op_list.append(op)
 
-        menu_op.m_option.takeout = request.POST['takeout']
-        menu_op.m_option.count = request.POST['count']
+        basket.ototal_price *= int(basket.count)
+        basket.save()
+        basket.b_options.add(*op_list)
 
-        check_values = request.POST.getlist('etcoption')
-    # total_price = (menu.m_price + etcoptions.option_price)* options.count
 
     return render(request, 'menuapp/optionmenu.html', {'menu':menu})
 
 def checkmenu(request):
-    menus = Menu()
-    baskets = Basket()
-    # baskets.ototal_price = (menus.m_price + etcoptions.option_price)* options.count
-    return render(request, 'menuapp/checkmenu.html')
+    baskets = Basket.objects.all()
+    return render(request, 'menuapp/checkmenu.html', {'baskets': baskets})
 
 def delete(request, pk):
-    baskets = get_object_or_404(Basket, pk=pk)
-    baskets.delete()
+    basket = get_object_or_404(Basket, pk=pk)
+    basket.delete()
     return redirect('checkmenu')
 
 def pay(request):
