@@ -65,4 +65,13 @@ class Pay(models.Model):
     date = models.DateTimeField()
     total = models.IntegerField()
     order_num = models.IntegerField()
-    baskets = models.ManyToManyField('Basket')
+    baskets = models.ManyToManyField('Basket', blank=True)
+
+class Order(models.Model):
+    def __str__(self):
+        return str(self.or_num)
+    or_name = models.CharField(max_length=200)
+    or_num = models.IntegerField()
+    or_options = models.ManyToManyField('Option', blank=True)
+    or_count = models.IntegerField()
+    or_takeout = models.BooleanField(default=False)

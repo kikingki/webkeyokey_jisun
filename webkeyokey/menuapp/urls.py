@@ -7,8 +7,8 @@ urlpatterns = [
     path('optionmenu/<int:pk>', views.optionmenu, name='optionmenu'),
     path('checkmenu/', views.checkmenu, name='checkmenu'),
     path('pay/', views.pay, name='pay'),
-    path('success/', views.success, name='success'),
+    path('pay/success/', views.success, name='success'),
     path('order/', views.order, name='order'),
     path('orderdetail/', views.orderdetail, name='orderdetail'),
-    path('checkmenu/delete/<int:pk>', views.delete, name='delete'),
+    path('checkmenu/delete_basket/<int:pk>', views.delete_basket, name='delete_basket'),
 ]

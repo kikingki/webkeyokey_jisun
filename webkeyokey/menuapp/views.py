@@ -1,5 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from main.models import CustomUser, Menu, Option, Basket, Pay
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from main.models import CustomUser, Menu, Option, Basket, Pay, Order
+from datetime import datetime
+from django.utils.dateformat import DateFormat
+import random
+
+
 # from .forms import OptionForm, EtcOptionForm
 
 # Create your views here.
@@ -49,20 +54,62 @@ def checkmenu(request):
     baskets = Basket.objects.all()
     return render(request, 'menuapp/checkmenu.html', {'baskets': baskets})
 
-def delete(request, pk):
+def delete_basket(request, pk):
     basket = get_object_or_404(Basket, pk=pk)
     basket.delete()
     return redirect('checkmenu')
 
 def pay(request):
-    return render(request, 'menuapp/pay.html')
+    money = 0
+    for b in Basket.objects.all():
+        money += int(b.ototal_price)
+    if money == 0:
+        return HttpResponse("주문금액이 0원입니다. 메뉴를 추가해주세요.")
+    return render(request, 'menuapp/pay.html', {'money':money})
 
 def success(request):
-    pay = Pay.objects.all()
+    pay = Pay()
+    pay.date = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+    pay.total = 0
+    pay.order_num = random.randrange(0,100)
+    bt_list = list()
+    # for b in Basket.objects.all():
+    for b in Basket.objects.all():
+        pay.total += int(b.ototal_price)
+        order = Order()
+        order.or_name = b.menu_id.m_name
+        order.or_num = pay.order_num
+        order.or_count = b.count
+        order.or_takeout = b.takeout
+        for bt in b.b_options.all():
+            bt_list.append(bt)
+        # if Option.objects.filter(option_name=b.b_options).exists():
+        #     print(b.b_options.option_name)
+        #     bt = Option.objects.get(option_name=b.b_options)
+        #     bt_list.append(bt)
+            
+        order.save()
+        order.or_options.add(*bt_list)
+        
+        # print(bt_list)
+        # bt_list.clear()
+        # print(bt_list)
+        # print(order)
+        
+    pay.save()
+    
+    for b in Basket.objects.all():
+        b.delete()
     return render(request, 'menuapp/success.html', {'pay':pay})
 
 def order(request):
-    return render(request, 'menuapp/order.html')
+    orders = Order.objects.all()
+    return render(request, 'menuapp/order.html', {'orders':orders})
+
+def delete_order(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    order.delete()
+    return redirect('orderdetail')
 
 def orderdetail(request):
     return render(request, 'menuapp/orderdetail.html')

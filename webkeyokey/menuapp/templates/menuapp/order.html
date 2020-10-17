@@ -1,0 +1,16 @@
+{% for or in orders.all %}
+    <h1>{{ or.or_num }}</h1>
+    <p>메뉴: {{ or.or_name }}</p>
+    <p>{% for option in or.or_options.all %}
+            {% if option != 'null' %}
+            {{ option.option_name }}
+            {% endif %}
+       {% endfor %}
+    </p>
+    <p>수량: {{ or.or_count }}개</p>
+    {% if or.or_takeout %}
+        <p>테이크아웃</p>
+    {% else %}
+        <p>매장</p>
+    {% endif %}
+{% endfor %}
