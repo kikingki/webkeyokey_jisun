@@ -9,14 +9,16 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
   integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-<a> 커피 </p>
+<a> 커피 </a>
 <p> 주스 </p>
 <p> 티 </p>
 <p> 스무디/프라푸치노 </p>
 <p> 논커피 </p>
 <p> 디저트 </p>
 
+
 {% for menus in menus.all %}
+{% if menus.user_id == user %}
 <div class="card">
   {% if menus.m_img %}
   <img class="card-img-top" src="{{ menus.m_img.url }}" alt="">
@@ -32,5 +34,6 @@
     </small>
   </div>
 </div>
+{% endif %}
 {% endfor %}
 <button type="button" class="btn btn-primary btn-lg" onclick="location.href ='{% url 'checkmenu' %}'">주문 확인</button>

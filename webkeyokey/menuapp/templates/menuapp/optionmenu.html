@@ -38,12 +38,12 @@
   수량: <input name='count' type="number" value="1">
 </label>
 
-추가옵션: 
 {% for m in menu.options.all %}
 <label>
 <input type="checkbox" name="option[]" value="{{m}}" class="chk">{{ m.option_name }}({{m.option_price}}원)
 </label>
 {% endfor %}
+
 
 <input type="submit" value="추가" onclick="javascript:btn()">
 </form>

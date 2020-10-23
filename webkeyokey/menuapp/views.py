@@ -21,8 +21,14 @@ import random
 # 2. takeout 체크박스를 선택하지 않았을 경우엔 아예 POST로 전달이 안되는데 이런 경우엔 어떡하징 => 해결
 # 3. 바구니의 총 금액 보여주기 -> jsp로 
 
+# def menu(request):
+#     menus = Menu.objects.all()
+#     return render(request, 'menuapp/menu.html', {'menus':menus})
+
 def menu(request):
     menus = Menu.objects.all()
+    user = request.user
+    print(user)
     return render(request, 'menuapp/menu.html', {'menus':menus})
 
 def optionmenu(request, pk):
@@ -52,7 +58,10 @@ def optionmenu(request, pk):
 
 def checkmenu(request):
     baskets = Basket.objects.all()
-    return render(request, 'menuapp/checkmenu.html', {'baskets': baskets})
+    money = 0
+    for b in baskets:
+        money +=  int(b.ototal_price)
+    return render(request, 'menuapp/checkmenu.html', {'baskets': baskets, 'money':money})
 
 def delete_basket(request, pk):
     basket = get_object_or_404(Basket, pk=pk)
@@ -73,6 +82,7 @@ def success(request):
     pay.total = 0
     pay.order_num = random.randrange(0,100)
     bt_list = list()
+    or_list = list()
     # for b in Basket.objects.all():
     for b in Basket.objects.all():
         pay.total += int(b.ototal_price)
@@ -90,6 +100,8 @@ def success(request):
             
         order.save()
         order.or_options.add(*bt_list)
+        bt_list.clear()
+        or_list.append(order)
         
         # print(bt_list)
         # bt_list.clear()
@@ -97,19 +109,29 @@ def success(request):
         # print(order)
         
     pay.save()
+    pay.orders.add(*or_list)
+
+    # for o in Order.objects.all():
+    #     if o.or_num == pay.order_num:
+    #         pay.orders.add(o)
     
     for b in Basket.objects.all():
         b.delete()
     return render(request, 'menuapp/success.html', {'pay':pay})
 
+# def order(request):
+#     orders = Order.objects.all()
+#     return render(request, 'menuapp/order.html', {'orders':orders})
+
 def order(request):
-    orders = Order.objects.all()
-    return render(request, 'menuapp/order.html', {'orders':orders})
+    por_list = Pay.objects.all()
+    return render(request, 'menuapp/order.html', {'por_list':por_list})
 
 def delete_order(request, pk):
     order = get_object_or_404(Order, pk=pk)
     order.delete()
-    return redirect('orderdetail')
+    return redirect('order')
 
-def orderdetail(request):
-    return render(request, 'menuapp/orderdetail.html')
+def orderdetail(request, pk):
+    p_or = get_object_or_404(Pay, pk=pk)
+    return render(request, 'menuapp/orderdetail.html', {'p_or':p_or})

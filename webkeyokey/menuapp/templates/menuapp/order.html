@@ -1,3 +1,77 @@
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+  integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+{% for por in por_list.all %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-header">
+            주문번호 {{ por.order_num }}
+        </div>
+
+        {% for or in por.orders.all %}
+        {% if forloop.counter < 3 %}
+        <ul class="list-group list-group-flush">
+        <li class="list-group-item"><p>{{ or.or_name }}</p>
+            <p>{% for option in or.or_options.all %}
+                {% if option != 'null' %}
+                {{ option.option_name }}
+                {% endif %}
+                {% endfor %}
+            </p>
+            <p>{{ or.or_count }}개</p>
+        {% if or.or_takeout %}
+            <p>테이크아웃</p>
+        {% else %}
+            <p>매장</p>
+        {% endif %}
+        </li>
+        {% endif %}
+        {% if forloop.counter > 3 %}
+        <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'orderdetail' pk=por.pk %}'">더보기</a>
+        {% endif %}
+        {% endfor %}
+        </ul>
+
+    </div>
+    <br>
+{% endfor %}
+<!-- 
+{% for or in p_order.orders_set.all %}
+  <div class="card" style="width: 18rem;">
+    <div class="card-header">
+        {{ or.orders.or_num }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true" onclick="location.href ='{% url 'delete_order' pk=or.orders.pk %}'">&times;</span>
+          </button>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><p>메뉴: {{ or.orders.or_name }}</p>
+        <p>{% for option in or.orders.or_options.all %}
+            {% if option != 'null' %}
+            {{ option.option_name }}
+            {% endif %}
+            {% endfor %}
+        </p>
+        <p>수량: {{ or.orders.or_count }}개</p>
+    {% if or.orders.or_takeout %}
+        <p>테이크아웃</p>
+    {% else %}
+        <p>매장</p>
+    {% endif %}
+    </li>
+    </ul>
+  </div>
+{% endfor %}  -->
+
+
+<!--   
 {% for or in orders.all %}
     <h1>{{ or.or_num }}</h1>
     <p>메뉴: {{ or.or_name }}</p>
@@ -13,4 +87,4 @@
     {% else %}
         <p>매장</p>
     {% endif %}
-{% endfor %}
+{% endfor %} -->

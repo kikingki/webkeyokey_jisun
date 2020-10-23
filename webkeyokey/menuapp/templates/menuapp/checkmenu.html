@@ -23,7 +23,7 @@
 </div>
 {% endfor %}
 
-  <p>총 금액: </p>
+  <p>총 금액: {{ money }}</p>
 
   <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'menu' %}'">계속 주문하기</a>
   <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'pay' %}'">결제하기</a>

@@ -18,10 +18,13 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
-    phone = models.IntegerField(default="010")
-    u_id = models.IntegerField(null=True)
+    u_id = models.IntegerField(unique=True, null=True)
+    username = models.TextField(null=True)
+    phone = models.TextField(default="010")
     answer = models.TextField(max_length=200, blank=True)
     question_id = models.IntegerField(default=1, choices=Q)
+    USERNAME_FIELD = 'u_id'
+    REQUIRED_FIELDS = ['username']
 
 class Menu(models.Model):
     def __str__(self):
@@ -65,7 +68,8 @@ class Pay(models.Model):
     date = models.DateTimeField()
     total = models.IntegerField()
     order_num = models.IntegerField()
-    baskets = models.ManyToManyField('Basket', blank=True)
+    # baskets = models.ManyToManyField('Basket', blank=True)
+    orders = models.ManyToManyField('Order', blank=True)
 
 class Order(models.Model):
     def __str__(self):
