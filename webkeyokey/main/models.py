@@ -68,8 +68,8 @@ class Pay(models.Model):
     date = models.DateTimeField()
     total = models.IntegerField()
     order_num = models.IntegerField()
-    # baskets = models.ManyToManyField('Basket', blank=True)
-    orders = models.ManyToManyField('Order', blank=True)
+    #baskets 필드 삭제
+    orders = models.ManyToManyField('Order', blank=True) #order 모델 다대다연결
 
 class Order(models.Model):
     def __str__(self):

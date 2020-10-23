@@ -21,14 +21,10 @@ import random
 # 2. takeout 체크박스를 선택하지 않았을 경우엔 아예 POST로 전달이 안되는데 이런 경우엔 어떡하징 => 해결
 # 3. 바구니의 총 금액 보여주기 -> jsp로 
 
-# def menu(request):
-#     menus = Menu.objects.all()
-#     return render(request, 'menuapp/menu.html', {'menus':menus})
 
 def menu(request):
     menus = Menu.objects.all()
-    user = request.user
-    print(user)
+    user = request.user     #현재 로그인한 유저
     return render(request, 'menuapp/menu.html', {'menus':menus})
 
 def optionmenu(request, pk):
@@ -40,6 +36,8 @@ def optionmenu(request, pk):
         if request.POST.getlist('takeout') != []:
             basket.takeout = True
         basket.count = request.POST['count']
+        if int(basket.count) <= 0:  #수량을 음수로 선택했을 경우 다시 선택하도록 함
+            return HttpResponse("수량을 다시 선택해주세요.")    
         basket.ototal_price = menu.m_price
         check_values = request.POST.getlist('option[]')
         op_list = list()
@@ -53,10 +51,10 @@ def optionmenu(request, pk):
         basket.save()
         basket.b_options.add(*op_list)
 
-
     return render(request, 'menuapp/optionmenu.html', {'menu':menu})
 
 def checkmenu(request):
+    # 총 금액 계산하는 money 변수 추가
     baskets = Basket.objects.all()
     money = 0
     for b in baskets:
@@ -80,10 +78,9 @@ def success(request):
     pay = Pay()
     pay.date = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
     pay.total = 0
-    pay.order_num = random.randrange(0,100)
+    pay.order_num = random.randrange(0,500) # random 범위가 좁은 것 같아서 100->500으로 수정
     bt_list = list()
-    or_list = list()
-    # for b in Basket.objects.all():
+    or_list = list()    #order를 저장할  리스트 or_list 생성
     for b in Basket.objects.all():
         pay.total += int(b.ototal_price)
         order = Order()
@@ -93,43 +90,28 @@ def success(request):
         order.or_takeout = b.takeout
         for bt in b.b_options.all():
             bt_list.append(bt)
-        # if Option.objects.filter(option_name=b.b_options).exists():
-        #     print(b.b_options.option_name)
-        #     bt = Option.objects.get(option_name=b.b_options)
-        #     bt_list.append(bt)
             
         order.save()
         order.or_options.add(*bt_list)
-        bt_list.clear()
-        or_list.append(order)
-        
-        # print(bt_list)
-        # bt_list.clear()
-        # print(bt_list)
-        # print(order)
-        
-    pay.save()
-    pay.orders.add(*or_list)
+        bt_list.clear() #리스트 비우기
+        or_list.append(order) #리스트에 order 추가
 
-    # for o in Order.objects.all():
-    #     if o.or_num == pay.order_num:
-    #         pay.orders.add(o)
-    
+    pay.save()
+    pay.orders.add(*or_list) #pay에 order 저장
+
     for b in Basket.objects.all():
         b.delete()
     return render(request, 'menuapp/success.html', {'pay':pay})
 
-# def order(request):
-#     orders = Order.objects.all()
-#     return render(request, 'menuapp/order.html', {'orders':orders})
 
 def order(request):
-    por_list = Pay.objects.all()
+    por_list = Pay.objects.all()    #order 대신 pay 모델을 불러오는 것으로 변경
     return render(request, 'menuapp/order.html', {'por_list':por_list})
 
-def delete_order(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    order.delete()
+def delete_order(request, pk):  # 한 고객의 모든 주문을 한번에 삭제
+    pay = get_object_or_404(Pay, pk=pk)
+    for o in pay.orders.all():
+        o.delete()
     return redirect('order')
 
 def orderdetail(request, pk):

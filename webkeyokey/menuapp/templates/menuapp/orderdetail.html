@@ -7,10 +7,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 <h2>주문번호 {{ p_or.order_num }}번 고객님입니다.</h2>
-{% for p in p_or.orders.all %}
+{% for p in p_or.orders.all %} <!-- pay의 orders 가져오기 -->
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
   <strong>{{ p.or_name }}</strong>
-  {% for option in p.or_options.all %}
+  {% for option in p.or_options.all %} <!-- pay의 orders 옵션 나열 -->
     {{ option.option_name }}
   {% endfor %}
   {{ p.or_count }}개
@@ -19,10 +19,8 @@
     {% else %}
     <p>매장</p>
     {% endif %}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true" onclick="location.href ='{% url 'delete_order' pk=p.pk %}'">&times;</span>
-  </button>
 </div>
 {% endfor %}
 
-  <a href="#" class="btn btn-primary" onclick="location.href ='{% url 'order' %}'">이전</a>
+<a href="#" class="btn btn-primary" onclick="location.href ='{% url 'order' %}'">이전</a> <!-- order 페이지 돌아가기 -->
+<a href="#" class="btn btn-primary" onclick="location.href ='{% url 'delete_order' pk=p_or.pk %}'">완료</a> <!-- 제조 완료 -->
