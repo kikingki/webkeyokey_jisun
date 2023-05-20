@@ -8,6 +8,12 @@
 
 [웹키오키 최종 github 주소](https://github.com/Skhu-Likelion-8th/WebKeyOKey)
 
+## ERD
+![웹키오키_ERD](https://github.com/kikingki/webkeyokey_jisun/assets/63100425/1379f479-5c2a-4f7d-bd33-b23ce316c8c3)
+
+## 플로우차트
+![KakaoTalk_20200818_183002519](https://github.com/kikingki/webkeyokey_jisun/assets/63100425/2bff42c2-525f-4683-bcbe-653987655689)
+
 ## 역할 분담
 ### Front-End
 - 선재: findpassword.html, boss.html, menu.html, optionmenu.html, checkmenu.html 
